@@ -4,85 +4,85 @@ const options = require('./utils/options')
 const { color, messageLog } = require('./utils')
 const HandleMsg = require('./HandleMsg')
 
-const start = (aruga = new Client()) => {
+const start = (bocilClient = new Client()) => {
     console.log(color(figlet.textSync('----------------', { horizontalLayout: 'default' })))
-    console.log(color(figlet.textSync('ARUGA BOT', { font: 'Ghost', horizontalLayout: 'default' })))
+    console.log(color(figlet.textSync('bocilClient BOT', { font: 'Ghost', horizontalLayout: 'default' })))
     console.log(color(figlet.textSync('----------------', { horizontalLayout: 'default' })))
-    console.log(color('[DEV]'), color('ArugaZ', 'yellow'))
+    console.log(color('[DEV]'), color('bocilClientZ', 'yellow'))
     console.log(color('[~>>]'), color('BOT Started!', 'green'))
 
     // Mempertahankan sesi agar tetap nyala
-    aruga.onStateChanged((state) => {
+    bocilClient.onStateChanged((state) => {
         console.log(color('[~>>]', 'red'), state)
-        if (state === 'CONFLICT' || state === 'UNLAUNCHED') aruga.forceRefocus()
+        if (state === 'CONFLICT' || state === 'UNLAUNCHED') bocilClient.forceRefocus()
     })
 
     // ketika bot diinvite ke dalam group
-    aruga.onAddedToGroup(async (chat) => {
-	const groups = await aruga.getAllGroups()
+    bocilClient.onAddedToGroup(async (chat) => {
+	const groups = await bocilClient.getAllGroups()
 	// kondisi ketika batas group bot telah tercapai,ubah di file settings/setting.json
 	if (groups.length > groupLimit) {
-	await aruga.sendText(chat.id, `Sorry, the group on this bot is full\nMax Group is: ${groupLimit}`).then(() => {
-	      aruga.leaveGroup(chat.id)
-	      aruga.deleteChat(chat.id)
+	await bocilClient.sendText(chat.id, `Sorry, the group on this bot is full\nMax Group is: ${groupLimit}`).then(() => {
+	      bocilClient.leaveGroup(chat.id)
+	      bocilClient.deleteChat(chat.id)
 	  }) 
 	} else {
 	// kondisi ketika batas member group belum tercapai, ubah di file settings/setting.json
 	    if (chat.groupMetadata.participants.length < memberLimit) {
-	    await aruga.sendText(chat.id, `Sorry, BOT comes out if the group members do not exceed ${memberLimit} people`).then(() => {
-	      aruga.leaveGroup(chat.id)
-	      aruga.deleteChat(chat.id)
+	    await bocilClient.sendText(chat.id, `Sorry, BOT comes out if the group members do not exceed ${memberLimit} people`).then(() => {
+	      bocilClient.leaveGroup(chat.id)
+	      bocilClient.deleteChat(chat.id)
 	    })
 	    } else {
-        await aruga.simulateTyping(chat.id, true).then(async () => {
-          await aruga.sendText(chat.id, `Hai minna~, Im Aruga BOT. To find out the commands on this bot type ${prefix}menu`)
+        await bocilClient.simulateTyping(chat.id, true).then(async () => {
+          await bocilClient.sendText(chat.id, `Hai minna~, Im bocilClient BOT. To find out the commands on this bot type ${prefix}menu`)
         })
 	    }
 	}
     })
 
     // ketika seseorang masuk/keluar dari group
-    aruga.onGlobalParicipantsChanged(async (event) => {
-        const host = await aruga.getHostNumber() + '@c.us'
+    bocilClient.onGlobalParicipantsChanged(async (event) => {
+        const host = await bocilClient.getHostNumber() + '@c.us'
         // kondisi ketika seseorang diinvite/join group lewat link
         if (event.action === 'add' && event.who !== host) {
-            await aruga.sendTextWithMentions(event.chat, `Hello, Welcome to the group @${event.who.replace('@c.us', '')} \n\nHave fun with us✨`)
+            await bocilClient.sendTextWithMentions(event.chat, `Hello, Welcome to the group @${event.who.replace('@c.us', '')} \n\nHave fun with us✨`)
         }
         // kondisi ketika seseorang dikick/keluar dari group
         if (event.action === 'remove' && event.who !== host) {
-            await aruga.sendTextWithMentions(event.chat, `Good bye @${event.who.replace('@c.us', '')}, We'll miss you✨`)
+            await bocilClient.sendTextWithMentions(event.chat, `Good bye @${event.who.replace('@c.us', '')}, We'll miss you✨`)
         }
     })
 
-    aruga.onIncomingCall(async (callData) => {
+    bocilClient.onIncomingCall(async (callData) => {
         // ketika seseorang menelpon nomor bot akan mengirim pesan
-        await aruga.sendText(callData.peerJid, 'Maaf sedang tidak bisa menerima panggilan.\n\n-bot')
+        await bocilClient.sendText(callData.peerJid, 'Maaf sedang tidak bisa menerima panggilan.\n\n-bot')
         .then(async () => {
             // bot akan memblock nomor itu
-            await aruga.contactBlock(callData.peerJid)
+            await bocilClient.contactBlock(callData.peerJid)
         })
     })
 
     // ketika seseorang mengirim pesan
-    aruga.onMessage(async (message) => {
-        aruga.getAmountOfLoadedMessages() // menghapus pesan cache jika sudah 3000 pesan.
+    bocilClient.onMessage(async (message) => {
+        bocilClient.getAmountOfLoadedMessages() // menghapus pesan cache jika sudah 3000 pesan.
             .then((msg) => {
                 if (msg >= 3000) {
-                    console.log('[aruga]', color(`Loaded Message Reach ${msg}, cuting message cache...`, 'yellow'))
-                    aruga.cutMsgCache()
+                    console.log('[bocilClient]', color(`Loaded Message Reach ${msg}, cuting message cache...`, 'yellow'))
+                    bocilClient.cutMsgCache()
                 }
             })
-        HandleMsg(aruga, message)    
+        HandleMsg(bocilClient, message)    
     
     })
 	
     // Message log for analytic
-    aruga.onAnyMessage((anal) => { 
+    bocilClient.onAnyMessage((anal) => { 
         messageLog(anal.fromMe, anal.type)
     })
 }
 
 //create session
 create(options(true, start))
-    .then((aruga) => start(aruga))
+    .then((bocilClient) => start(bocilClient))
     .catch((err) => new Error(err))
