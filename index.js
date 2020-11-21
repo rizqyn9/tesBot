@@ -1,8 +1,12 @@
-const { create, Client } = require('@open-wa/wa-automate')
-const figlet = require('figlet')
-const options = require('./utils/options')
-const { color, messageLog } = require('./utils')
-const HandleMsg = require('./HandleMsg')
+const { create, Client } = require("@open-wa/wa-automate");
+const figlet = require("figlet");
+const gradient = require("gradient-string");
+const style = require("./custom/console");
+const options = require("./utils/options");
+const { color, messageLog } = require("./utils");
+const HandleMsg = require("./HandleMsg"); 
+const { cacheMessage, groupLimit, botName} = require("./bot-setting.json"); //! Bot Setting
+const {infoFeedback,infoProblem} = require('./msg/msg-temp') //! Massage Template
 
 const start = (bocilClient = new Client()) => {
     console.log(
