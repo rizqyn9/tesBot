@@ -5,12 +5,18 @@ const { color, messageLog } = require('./utils')
 const HandleMsg = require('./HandleMsg')
 
 const start = (bocilClient = new Client()) => {
-    console.log(color(figlet.textSync('----------------', { horizontalLayout: 'default' })))
-    console.log(color(figlet.textSync('bocilClient BOT', { font: 'Ghost', horizontalLayout: 'default' })))
-    console.log(color(figlet.textSync('----------------', { horizontalLayout: 'default' })))
-    console.log(color('[DEV]'), color('bocilClientZ', 'yellow'))
-    console.log(color('[~>>]'), color('BOT Started!', 'green'))
-
+    console.log(
+        gradient.instagram(
+          figlet.textSync("RIZQY\nSTUDIO", {
+            font: "Epic",
+            horizontalLayout: "default",
+          })
+        )
+      );
+      console.log(style.dev("Made by R-Dev Studio"));
+      console.log(style.bot("Have a nice day Rizqy :)"));
+      console.log(style.bot("I'm ready for my Jobs"));
+    
     // Mempertahankan sesi agar tetap nyala
     bocilClient.onStateChanged((state) => {
         console.log(color('[~>>]', 'red'), state)
